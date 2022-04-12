@@ -1,0 +1,151 @@
+version: '3.9'
+
+services:
+# api-gateway
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - PRODUCT_HOST=product-service
+      - PRODUCT_PORT=8002
+      - AUTH_HOST=auth-service
+      - AUTH_PORT=8001
+    depends_on:
+      auth-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+    networks:
+      - auth-net
+      - product-net
+      - external-net
+# auth-service
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    hostname: auth-service
+    restart: always
+    expose:
+      - 8001/tcp
+    environment:
+      - AMQP_HOST=rabbitmq-container
+      - AMQP_USER=admin
+      - AMQP_PASS=2233
+      - AMQP_PORT=5672
+      - MYSQL_HOST=auth-db
+      - MYSQL_USER=root
+      - MYSQL_PASS=123
+      - MYSQL_DB=db-auth
+      - ENV=prod
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    networks:
+      - auth-net
+      - rabbitmq-net
+# auth-db
+  auth-db:
+    image: mysql
+    container_name: auth-db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    hostname: auth-db    
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    environment:
+      MYSQL_DATABASE: db-auth
+      MYSQL_ROOT_PASSWORD: 123
+    expose:
+      - 3306/tcp
+    volumes:
+      - db-auth:/var/lib/mysql
+    networks:
+      - auth-net
+# product-service
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    hostname: product-service
+    restart: always
+    expose:
+      - 8002/tcp
+    environment:
+      - AMQP_HOST=rabbitmq-container
+      - AMQP_USER=admin
+      - AMQP_PASS=2233
+      - AMQP_PORT=5672
+      - MYSQL_HOST=product-db
+      - MYSQL_USER=root
+      - MYSQL_PASS=123
+      - MYSQL_DB=db-product
+      - ENV=prod
+    depends_on:
+      product-db:
+        condition: service_healthy
+    networks:
+      - product-net
+      - rabbitmq-net
+# product-db
+  product-db:
+    image: mysql
+    container_name: product-db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    hostname: product-db    
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    environment:
+      MYSQL_DATABASE: db-product
+      MYSQL_ROOT_PASSWORD: 123
+    expose:
+      - 3306/tcp
+    volumes:
+      - db-product:/var/lib/mysql
+    networks:
+      - product-net
+# rabbitmq-container
+  rabbitmq-container:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-container
+    hostname: rabbitmq-container
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 2233
+    ports:
+      - 15672:15672
+      # - 5672:5672
+    expose:
+      - 5672/tcp
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - rabbitmq-net
+      - external-net
+networks:
+  auth-net:
+    internal: true
+  rabbitmq-net:
+    internal: true
+  product-net:
+    internal: true
+  external-net:
+    external:
+      name: external-net-trafic
+volumes:
+  db-auth:
+    name: db-auth
+  db-product:
+    name: db-product
+  rabbitmq-data:
+    name: rabbitmq
+
+
+

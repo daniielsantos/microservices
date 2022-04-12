@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
+    "target": "es5",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "commonjs",                                /* Specify what module code is generated. */
+    "moduleResolution": "node",                          /* Specify how the compiler resolves module names. */
+    "emitDecoratorMetadata": true,                       /* Generates corresponding '.d.ts' file with decorator information. */
+    "experimentalDecorators": true,                      /* Enables experimental support for ES7 decorators. */
+    "outDir": "./dist",                                  /* Redirect output structure to the directory. */
+  }
+}

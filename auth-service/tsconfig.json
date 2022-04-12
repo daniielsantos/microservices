@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es5",
+      "es6",
+      "es7",
+      "dom",
+      "ES2017",
+      "ES2018",
+      "ESNext"
+    ],
+    "target": "ES2017",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "CommonJS",                                /* Specify what module code is generated. */
+    "moduleResolution": "node",                          /* Specify how the compiler resolves module names. */
+    "emitDecoratorMetadata": true,                       /* Generates corresponding '.d.ts' file with decorator information. */
+    "experimentalDecorators": true,                      /* Enables experimental support for ES7 decorators. */
+    "outDir": "./dist",                                  /* Redirect output structure to the directory. */
+    "rootDir": "./src",                                  /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    "inlineSourceMap": true,                             /* Emits a single file with source maps instead of having a separate file. */
+    "inlineSources": true,                               /* Emits the source alongside the sourcemaps into a single file. */
+  }
+}
