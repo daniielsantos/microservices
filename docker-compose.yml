@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-# api-gateway
+#
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
@@ -22,7 +22,7 @@ services:
       - auth-net
       - product-net
       - external-net
-# auth-service
+#
   auth-service:
     build: ./auth-service
     container_name: auth-service
@@ -46,7 +46,7 @@ services:
     networks:
       - auth-net
       - rabbitmq-net
-# auth-db
+#
   auth-db:
     image: mysql
     container_name: auth-db
@@ -66,7 +66,7 @@ services:
       - db-auth:/var/lib/mysql
     networks:
       - auth-net
-# product-service
+#
   product-service:
     build: ./product-service
     container_name: product-service
@@ -90,7 +90,7 @@ services:
     networks:
       - product-net
       - rabbitmq-net
-# product-db
+#
   product-db:
     image: mysql
     container_name: product-db
@@ -110,7 +110,7 @@ services:
       - db-product:/var/lib/mysql
     networks:
       - product-net
-# rabbitmq-container
+#
   rabbitmq-container:
     image: rabbitmq:3-management
     container_name: rabbitmq-container
@@ -146,6 +146,3 @@ volumes:
     name: db-product
   rabbitmq-data:
     name: rabbitmq
-
-
-
