@@ -4,13 +4,15 @@ import * as cors from 'cors';
 import * as expressProxy from 'express-http-proxy';
 import * as cookieParser from 'cookie-parser';
 import * as logger from 'morgan';
+import * as timeout from 'connect-timeout';
 import helmet from 'helmet';
 
 const app = express();
 app.use(cors());
-
+app.use(timeout("10s"));
 const authServiceProxy = expressProxy(`http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}`);
 const productServiceProxy = expressProxy(`http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}`);
+
 
 // PRODUCTS
 app.get('/product', (req, res, next) => {
@@ -20,6 +22,9 @@ app.get('/product/:id', (req, res, next) => {
   productServiceProxy(req, res, next);
 });
 app.post('/product/create', (req, res, next) => {
+  productServiceProxy(req, res, next);
+});
+app.post('/product/buy', (req, res, next) => {
   productServiceProxy(req, res, next);
 });
 app.put('/product/update/:id', (req, res, next) => {
